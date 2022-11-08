@@ -21,7 +21,9 @@ public class Task {
     @Column(name = "id", nullable = false)
     private Long id;
 
-
+//    @ManyToOne
+//    @GeneratedValue(strategy = GenerationType.IDENTITY  )
+//    @JoinColumn(name = "user_id")
     private Long userId;
 
     @Column(nullable = false)
