@@ -1,11 +1,11 @@
 package com.caseitau.controller;
 
-import com.caseitau.model.Task;
+import com.caseitau.dto.TaskDto;
+import com.caseitau.entity.StatusTask;
+import com.caseitau.entity.Task;
 import com.caseitau.service.TaskService;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +22,9 @@ public class TaskController {
 
     @PostMapping("/tasks")
     @ResponseStatus(HttpStatus.CREATED)
-    public Task createTask(@RequestBody Task task){
-        log.info("Criando uma nova tarefa com as informações [{}]", task);
-        return taskService.createTask(task);
+    public Task createTask(@RequestBody TaskDto taskDto){
+        log.info("Criando uma nova tarefa com as informações [{}]", taskDto);
+        return taskService.createTask(taskDto);
     }
 
     @GetMapping("/tasks")
@@ -34,18 +34,19 @@ public class TaskController {
         return taskService.taskListAll();
     }
 
-    @GetMapping("/tasks/{id}")
+    @GetMapping("/tasks/{id}/{status}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Task> getTasksById(@PathVariable (value = "id") Long id){
+    public ResponseEntity<List<Task>> getTasksById(@PathVariable (value = "id") Long id, @PathVariable (value = "status") StatusTask status){
         log.info("Buscando tarefa com o id [{}]", id);
-        return taskService.findTaskById(id);
+        List<Task> tasks = taskService.findTasks(status, id);
+        return ResponseEntity.ok().body(tasks);
     }
 
     @PutMapping("/tasks/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Task> updatedTaskById(@PathVariable (value = "id") Long id, @RequestBody Task task){
-        log.info("Atualizando uma tarefa com o id [{}] e as novas informações são: [{}]", task);
-        return taskService.updateTask(task, id);
+    public ResponseEntity<Task> updatedTaskById(@PathVariable (value = "id") Long id, @RequestBody TaskDto taskDto){
+        log.info("Atualizando uma tarefa com o id [{}] e as novas informações são: [{}]", taskDto);
+        return taskService.updateTask(taskDto, id);
     }
 
     @DeleteMapping("/tasks/{id}")
@@ -54,4 +55,5 @@ public class TaskController {
         log.info("Removendo uma tarefa com o id [{}]", id);
         return taskService.deleteById(id);
     }
+
 }
