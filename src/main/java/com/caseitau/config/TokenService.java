@@ -2,7 +2,6 @@ package com.caseitau.config;
 
 import com.caseitau.entity.User;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +32,7 @@ public class TokenService {
                 .compact();
     }
 
-    public String getUser(String token){
+    public String getUser(String token) {
         return Jwts.parser().parseClaimsJwt(token).getBody().getIssuer();
     }
 
@@ -45,7 +44,6 @@ public class TokenService {
                     .parseClaimsJws(token.substring(7))
                     .getBody();
         } catch (Exception e) {
-//            LOGGER.error("Could not get all claims Token from passed token");
             claims = null;
         }
         return claims;

@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 public class TaskDto {
-
     private Long id;
 
     private User userId;

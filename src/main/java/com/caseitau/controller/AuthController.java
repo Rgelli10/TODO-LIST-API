@@ -4,7 +4,6 @@ import com.caseitau.config.TokenService;
 import com.caseitau.controller.form.LoginForm;
 import com.caseitau.dto.TokenDto;
 import com.caseitau.entity.User;
-import com.caseitau.entity.UserProfile;
 import com.caseitau.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +14,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
@@ -34,7 +30,7 @@ public class AuthController {
     @PostMapping
     public ResponseEntity<TokenDto> auth(
             @RequestBody
-            @Validated LoginForm form){
+            @Validated LoginForm form) {
         UsernamePasswordAuthenticationToken loginData = form.converter();
 
         try {
@@ -42,9 +38,8 @@ public class AuthController {
             User byUsername = userRepository.findByUsername(form.getUsername());
             String token = tokenService.generateToken(form.getUsername(), authentication, byUsername.getProfile());
 
-            return ResponseEntity.ok(new TokenDto(token, "Bearer")) ;
-        }
-        catch (AuthenticationException e){
+            return ResponseEntity.ok(new TokenDto(token, "Bearer"));
+        } catch (AuthenticationException e) {
             return ResponseEntity.badRequest().build();
         }
     }

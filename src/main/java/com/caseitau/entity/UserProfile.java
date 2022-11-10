@@ -10,7 +10,6 @@ import javax.persistence.*;
 @Setter
 @Entity
 public class UserProfile implements GrantedAuthority {
-
     private static final long serialVersionUID = 1L;
 
     @Id

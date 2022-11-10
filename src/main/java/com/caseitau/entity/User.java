@@ -17,7 +17,6 @@ import java.util.List;
 @Getter
 @ToString
 public class User implements UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id", nullable = false)

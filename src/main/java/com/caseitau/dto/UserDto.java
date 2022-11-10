@@ -10,7 +10,6 @@ import javax.persistence.Column;
 @Getter
 @ToString
 public class UserDto {
-
     @Column(nullable = false)
     private String name;
 

@@ -2,7 +2,6 @@ package com.caseitau.controller;
 
 import com.caseitau.config.TokenService;
 import com.caseitau.dto.TaskDto;
-import com.caseitau.entity.StatusTask;
 import com.caseitau.entity.Task;
 import com.caseitau.service.TaskService;
 import io.jsonwebtoken.Claims;
@@ -29,7 +28,7 @@ public class TaskController {
 
     @PostMapping("/tasks")
     @ResponseStatus(HttpStatus.CREATED)
-    public Task createTask(@RequestHeader Map<String, String> headers, @RequestBody TaskDto taskDto){
+    public Task createTask(@RequestHeader Map<String, String> headers, @RequestBody TaskDto taskDto) {
         System.out.println(headers);
         log.info("Criando uma nova tarefa com as informações [{}]", taskDto);
         return taskService.createTask(taskDto, headers.get("authorization"));
@@ -37,30 +36,22 @@ public class TaskController {
 
     @GetMapping("/tasks/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Task> getAllTasks(@RequestHeader Map<String, String> headers, @PathVariable (value = "id") Long id){
+    public List<Task> getAllTasks(@RequestHeader Map<String, String> headers, @PathVariable(value = "id") Long id) {
         log.info("Listando todas as tarefas cadastradas");
         Claims authorization = tokenService.getAllClaimsFromToken(headers.get("authorization"));
         return taskService.findTasks(id, authorization.getSubject());
     }
 
-//    @GetMapping("/tasks/{id}/{status}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public ResponseEntity<List<Task>> getTasksById(@PathVariable (value = "id") Long id, @PathVariable (value = "status") StatusTask status, String token){
-////        log.info("Buscando tarefa com o id [{}]", id);
-////        List<Task> tasks = taskService.findTasks(status, id, token);
-////        return ResponseEntity.ok().body(tasks);
-//    }
-
     @PutMapping("/tasks/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Task> updatedTaskById(@PathVariable (value = "id") Long id, @RequestBody TaskDto taskDto){
+    public ResponseEntity<Task> updatedTaskById(@PathVariable(value = "id") Long id, @RequestBody TaskDto taskDto) {
         log.info("Atualizando uma tarefa com o id [{}] e as novas informações são: [{}]", taskDto);
         return taskService.updateTask(taskDto, id);
     }
 
     @DeleteMapping("/tasks/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Object> deleteTaskById(@PathVariable (value = "id") Long id){
+    public ResponseEntity<Object> deleteTaskById(@PathVariable(value = "id") Long id) {
         log.info("Removendo uma tarefa com o id [{}]", id);
         return taskService.deleteById(id);
     }

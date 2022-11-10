@@ -2,8 +2,6 @@ package com.caseitau.config;
 
 import com.caseitau.entity.User;
 import com.caseitau.repository.UserRepository;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,7 +19,7 @@ public class AuthService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByEmail(username);
-        if(user.isPresent()){
+        if (user.isPresent()) {
             return user.get();
         }
         throw new UsernameNotFoundException("Dados Invalidos!");
