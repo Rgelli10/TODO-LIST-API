@@ -1,16 +1,20 @@
 package com.caseitau.controller;
 
+import com.caseitau.config.TokenService;
 import com.caseitau.dto.TaskDto;
 import com.caseitau.entity.StatusTask;
 import com.caseitau.entity.Task;
 import com.caseitau.service.TaskService;
+import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -18,29 +22,34 @@ import java.util.List;
 @Slf4j
 public class TaskController {
 
-    TaskService taskService;
+    @Autowired
+    private TaskService taskService;
+    @Autowired
+    private TokenService tokenService;
 
     @PostMapping("/tasks")
     @ResponseStatus(HttpStatus.CREATED)
-    public Task createTask(@RequestBody TaskDto taskDto){
+    public Task createTask(@RequestHeader Map<String, String> headers, @RequestBody TaskDto taskDto){
+        System.out.println(headers);
         log.info("Criando uma nova tarefa com as informações [{}]", taskDto);
-        return taskService.createTask(taskDto);
+        return taskService.createTask(taskDto, headers.get("authorization"));
     }
 
-    @GetMapping("/tasks")
+    @GetMapping("/tasks/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Task> getAllTasks(){
+    public List<Task> getAllTasks(@RequestHeader Map<String, String> headers, @PathVariable (value = "id") Long id){
         log.info("Listando todas as tarefas cadastradas");
-        return taskService.taskListAll();
+        Claims authorization = tokenService.getAllClaimsFromToken(headers.get("authorization"));
+        return taskService.findTasks(id, authorization.getSubject());
     }
 
-    @GetMapping("/tasks/{id}/{status}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<Task>> getTasksById(@PathVariable (value = "id") Long id, @PathVariable (value = "status") StatusTask status){
-        log.info("Buscando tarefa com o id [{}]", id);
-        List<Task> tasks = taskService.findTasks(status, id);
-        return ResponseEntity.ok().body(tasks);
-    }
+//    @GetMapping("/tasks/{id}/{status}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public ResponseEntity<List<Task>> getTasksById(@PathVariable (value = "id") Long id, @PathVariable (value = "status") StatusTask status, String token){
+////        log.info("Buscando tarefa com o id [{}]", id);
+////        List<Task> tasks = taskService.findTasks(status, id, token);
+////        return ResponseEntity.ok().body(tasks);
+//    }
 
     @PutMapping("/tasks/{id}")
     @ResponseStatus(HttpStatus.OK)

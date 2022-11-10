@@ -1,6 +1,7 @@
 package com.caseitau.entity;
 
 import com.caseitau.dto.UserDto;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,6 +17,9 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 public class Task {
+
+    public Task() {
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

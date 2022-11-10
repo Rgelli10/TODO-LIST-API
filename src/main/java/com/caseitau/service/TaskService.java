@@ -1,25 +1,35 @@
 package com.caseitau.service;
 
+import com.caseitau.config.TokenService;
 import com.caseitau.dto.TaskDto;
 import com.caseitau.entity.StatusTask;
 import com.caseitau.entity.Task;
 import com.caseitau.entity.User;
 import com.caseitau.repository.TaskRepository;
+import com.caseitau.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class TaskService {
-
+    @Autowired
     private TaskRepository taskRepository;
-//    private User user;
-//    private UserRepository user;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private TokenService tokenService;
 
-    public Task createTask(TaskDto taskDto){
+    public Task createTask(TaskDto taskDto, String token){
+        String user = tokenService.getAllClaimsFromToken(token).getIssuer();
+        System.out.println(user);
+
         Task toTaskDto = toTaskDto(taskDto);
         return taskRepository.save(toTaskDto);
     }
@@ -28,18 +38,18 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
-    public List<Task> findTasks(StatusTask statusTask, Long id){
-//        User user = taskRepository.findUserById();
-//        if (user.getIsAdmin()==1){
-//            return findAll();
-//        }
-//        if(user.getIsAdmin() == 1){
-//            return taskRepository.findByUserIdAndStatus(id, statusTask);
-//        }
-//        if(user.getIsAdmin() == 1){
-//            return taskRepository.findAll();
-//        }
-        return taskRepository.findByUserIdAndStatus(id, statusTask);
+    public List<Task> findTasks(Long id, String token){
+        List<Task> tasks = new ArrayList<>();
+        User user = userRepository.findById(id).orElseThrow();
+
+        if(token.equals("user")){
+            tasks.addAll(taskRepository.findByUserId(user.getUserId()));
+        }
+        else{
+            tasks = taskRepository.findAll();
+        }
+
+        return tasks;
     }
 
     public ResponseEntity<Task> updateTask(TaskDto taskDto, Long id){

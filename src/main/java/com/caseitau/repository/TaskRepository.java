@@ -12,4 +12,8 @@ import java.util.List;
 public interface TaskRepository extends JpaRepository <Task, Long> {
     @Query(value = "SELECT t FROM Task t WHERE t.userId = ?1 AND t.status = ?2")
     List<Task> findByUserIdAndStatus(Long userId, StatusTask statusTask);
+
+    @Query(value = "SELECT t FROM Task t WHERE t.userId = ?1")
+    List<Task> findByUserId(Long userId);
+
 }
