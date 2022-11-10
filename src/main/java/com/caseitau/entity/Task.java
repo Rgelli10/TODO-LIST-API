@@ -1,5 +1,7 @@
-package com.caseitau.model;
+package com.caseitau.entity;
 
+import com.caseitau.dto.UserDto;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,14 +16,17 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @ToString
-
 public class Task {
+
+    public Task() {
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-
+    @Column
     private Long userId;
 
     @Column(nullable = false)
@@ -38,6 +43,7 @@ public class Task {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    @Column(nullable = false)
-    private StatusTask status = StatusTask.PROCESSING;
+    @Column
+    private StatusTask status = StatusTask.PENDING;
+
 }
